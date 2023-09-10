@@ -18,6 +18,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl {
@@ -28,19 +31,19 @@ public class AuthenticationServiceImpl {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(UserDto request, Role role) {
-        var user = User.builder()
+        User user = User.builder()
                 .firstname(request.getFirstName())
                 .lastname(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(role)
                 .build();
-        var optionalUser = repository.findByEmail(request.getEmail());
+        Optional<User> optionalUser = repository.findByEmail(request.getEmail());
         if (optionalUser.isPresent()) {
             throw new EmailExistsException("Email Already Exists for User");
         }
-        var savedUser = repository.save(user);
-        var jwtToken = jwtService.generateToken(user);
+        User savedUser = repository.save(user);
+        String jwtToken = jwtService.generateToken(user);
         saveUserToken(savedUser, jwtToken);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
@@ -55,9 +58,9 @@ public class AuthenticationServiceImpl {
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail())
+        User user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+        String jwtToken = jwtService.generateToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
@@ -77,7 +80,7 @@ public class AuthenticationServiceImpl {
     }
 
     private void revokeAllUserTokens(User user) {
-        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
+        List<Token> validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
         if (validUserTokens.isEmpty())
             return;
         validUserTokens.forEach(token -> {
