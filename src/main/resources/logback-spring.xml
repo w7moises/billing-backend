@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <property name="LOG_FILE"
+              value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}" />
+    <property name="LOG_FILE_MAX_SIZE" value="5MB" />
+    <property name="LOG_TOTAL_SIZE_CAP" value="50MB" />
+    <property name="LOG_FILE_MAX_HISTORY" value="20" />
+    <include resource="file-appender.xml" />
+    <!-- Appender para la consola -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="FILE" />
+        <!-- Agregar la referencia al appender de la consola -->
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>

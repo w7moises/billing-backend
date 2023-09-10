@@ -1,5 +1,6 @@
 package com.app.billing.dto;
 
+import com.app.billing.models.Auditable;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EnterpriseDto {
+public class EnterpriseDto extends Auditable<String> {
     private UUID id;
     private String ruc;
     private String businessName;
