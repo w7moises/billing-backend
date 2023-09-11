@@ -1,6 +1,8 @@
 package com.app.billing.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,6 +17,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity
 @Table(name = "enterprises")
+@Audited
+@AuditTable(value = "aud_enterprises")
 public class Enterprise extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
