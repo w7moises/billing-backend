@@ -4,6 +4,7 @@ package com.app.billing.service.impl;
 import com.app.billing.config.auth.JwtService;
 import com.app.billing.dto.UserDto;
 import com.app.billing.exception.EmailExistsException;
+import com.app.billing.exception.EmailNotExistsException;
 import com.app.billing.models.Role;
 import com.app.billing.models.User;
 import com.app.billing.models.auth.AuthenticationRequest;
@@ -52,14 +53,14 @@ public class AuthenticationServiceImpl {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        User user = repository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new EmailNotExistsException("Email Not Found"));
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-        User user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
         String jwtToken = jwtService.generateToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
