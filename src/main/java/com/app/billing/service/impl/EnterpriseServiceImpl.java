@@ -11,22 +11,34 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.UUID;
 
 @Service
 public class EnterpriseServiceImpl implements EnterpriseService {
     private final EnterpriseRepository enterpriseRepository;
+
+    @Value("${api.url}")
+    private String url;
+
+    @Value("${api.token}")
+    private String token;
+
+    private final RestTemplate restTemplate;
+
     private final ModelMapper modelMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(EnterpriseServiceImpl.class);
 
-    public EnterpriseServiceImpl(EnterpriseRepository enterpriseRepository, ModelMapper modelMapper) {
+    public EnterpriseServiceImpl(EnterpriseRepository enterpriseRepository, RestTemplate restTemplate, ModelMapper modelMapper) {
         this.enterpriseRepository = enterpriseRepository;
+        this.restTemplate = restTemplate;
         this.modelMapper = modelMapper;
     }
 
@@ -84,6 +96,17 @@ public class EnterpriseServiceImpl implements EnterpriseService {
             // Log the error and throw a custom exception
             logger.error("Error while deleting enterprise with ID: " + id, e);
             throw new DataProcessingException("Error deleting the enterprise with ID: " + id);
+        }
+    }
+
+    @Override
+    public Object searchEnterpriseByRuc(String ruc) {
+        try {
+            return restTemplate.getForObject(url + ruc + token, Object.class);
+        } catch (Exception e) {
+            // Log the error and throw a custom exception
+            logger.error("Error while sarching ruc in api : https://apiperu.dev/api/ruc/");
+            throw new DataProcessingException("Error while sarching ruc in api : https://apiperu.dev/api/ruc/");
         }
     }
 }

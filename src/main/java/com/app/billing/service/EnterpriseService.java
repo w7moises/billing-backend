@@ -17,4 +17,6 @@ public interface EnterpriseService {
     EnterpriseDto updateEnterprise(UUID id, EnterpriseCreateDto enterpriseCreateDto);
 
     EnterpriseDto deleteEnterprise(UUID id);
+
+    Object searchEnterpriseByRuc(String ruc);
 }

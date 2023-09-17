@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping("enterprise")
+@RequestMapping("/enterprise")
 public class EnterpriseController {
     private final EnterpriseService enterpriseService;
 
@@ -50,6 +50,12 @@ public class EnterpriseController {
     public ResponseEntity<EnterpriseDto> deleteEnterprise(@PathVariable UUID id) {
         EnterpriseDto enterprise = enterpriseService.deleteEnterprise(id);
         return new ResponseEntity<>(enterprise, HttpStatus.OK);
+    }
+
+    @GetMapping("/search/ruc/{ruc}")
+    public ResponseEntity<Object> getEnterpriseByRuc(@PathVariable String ruc) {
+        Object response = enterpriseService.searchEnterpriseByRuc(ruc);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }
