@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -22,9 +23,9 @@ public class EnterpriseController {
         this.enterpriseService = enterpriseService;
     }
 
-    @GetMapping("/page")
-    public ResponseEntity<Page<EnterpriseDto>> getAllEnterprises(Pageable pageable) {
-        Page<EnterpriseDto> enterpriseList = enterpriseService.findAllEnterprises(pageable);
+    @GetMapping
+    public ResponseEntity<List<EnterpriseDto>> getAllEnterprises() {
+        List<EnterpriseDto> enterpriseList = enterpriseService.findAllEnterprises();
         return new ResponseEntity<>(enterpriseList, HttpStatus.OK);
     }
 

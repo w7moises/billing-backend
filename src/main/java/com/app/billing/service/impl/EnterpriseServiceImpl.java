@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -44,9 +45,10 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<EnterpriseDto> findAllEnterprises(Pageable pageable) {
-        return enterpriseRepository.findAll(pageable)
-                .map(enterprise -> modelMapper.map(enterprise, EnterpriseDto.class));
+    public List<EnterpriseDto> findAllEnterprises() {
+        return enterpriseRepository.findAll().stream()
+                .map(enterprise -> modelMapper.map(enterprise, EnterpriseDto.class))
+                .toList();
     }
 
     @Override

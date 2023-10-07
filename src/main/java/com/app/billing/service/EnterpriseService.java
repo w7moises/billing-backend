@@ -5,10 +5,11 @@ import com.app.billing.dto.create.EnterpriseCreateDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface EnterpriseService {
-    Page<EnterpriseDto> findAllEnterprises(Pageable pageable);
+    List<EnterpriseDto> findAllEnterprises();
 
     EnterpriseDto findEnterpriseById(UUID id);
 
