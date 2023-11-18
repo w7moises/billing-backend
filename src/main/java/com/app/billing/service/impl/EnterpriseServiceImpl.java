@@ -7,13 +7,12 @@ import com.app.billing.exception.ResourceNotFoundException;
 import com.app.billing.models.Enterprise;
 import com.app.billing.repository.EnterpriseRepository;
 import com.app.billing.service.EnterpriseService;
+import com.app.billing.service.MessageService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -35,12 +34,15 @@ public class EnterpriseServiceImpl implements EnterpriseService {
 
     private final ModelMapper modelMapper;
 
+    private final MessageService messageService;
+
     private static final Logger logger = LoggerFactory.getLogger(EnterpriseServiceImpl.class);
 
-    public EnterpriseServiceImpl(EnterpriseRepository enterpriseRepository, RestTemplate restTemplate, ModelMapper modelMapper) {
+    public EnterpriseServiceImpl(EnterpriseRepository enterpriseRepository, RestTemplate restTemplate, ModelMapper modelMapper, MessageService messageService) {
         this.enterpriseRepository = enterpriseRepository;
         this.restTemplate = restTemplate;
         this.modelMapper = modelMapper;
+        this.messageService = messageService;
     }
 
     @Override
@@ -55,7 +57,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     @Transactional(readOnly = true)
     public EnterpriseDto findEnterpriseById(UUID id) {
         Enterprise optionalEnterprise = enterpriseRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Enterprise", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Enterprise", "id", id, messageService));
         return modelMapper.map(optionalEnterprise, EnterpriseDto.class);
     }
 
@@ -67,7 +69,7 @@ public class EnterpriseServiceImpl implements EnterpriseService {
         } catch (Exception e) {
             // Log the error and throw a custom exception
             logger.error("Error while creating enterprise", e);
-            throw new DataProcessingException("Error creating the enterprise.");
+            throw new DataProcessingException(messageService.getMessage("enterprise.create"));
         }
     }
 
@@ -75,14 +77,16 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     public EnterpriseDto updateEnterprise(UUID id, EnterpriseCreateDto enterpriseCreateDto) {
         try {
             Enterprise optionalEnterprise = enterpriseRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Enterprise", "id", id));
+                    .orElseThrow(() -> new ResourceNotFoundException(messageService.getMessage("enterprise"), "id", id, messageService));
 
             BeanUtils.copyProperties(enterpriseCreateDto, optionalEnterprise, "id", "createdBy", "createdDate");
             return modelMapper.map(enterpriseRepository.save(optionalEnterprise), EnterpriseDto.class);
+        } catch (ResourceNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             // Log the error and throw a custom exception
             logger.error("Error while updating enterprise with ID: " + id, e);
-            throw new DataProcessingException("Error updating the enterprise with ID: " + id);
+            throw new DataProcessingException(messageService.getMessage("enterprise.update") + id);
         }
     }
 
@@ -90,14 +94,16 @@ public class EnterpriseServiceImpl implements EnterpriseService {
     public EnterpriseDto deleteEnterprise(UUID id) {
         try {
             Enterprise optionalEnterprise = enterpriseRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Enterprise", "id", id));
+                    .orElseThrow(() -> new ResourceNotFoundException(messageService.getMessage("enterprise"), "id", id, messageService));
 
             enterpriseRepository.deleteById(optionalEnterprise.getId());
             return modelMapper.map(optionalEnterprise, EnterpriseDto.class);
+        } catch (ResourceNotFoundException e) {
+            throw e;
         } catch (Exception e) {
             // Log the error and throw a custom exception
             logger.error("Error while deleting enterprise with ID: " + id, e);
-            throw new DataProcessingException("Error deleting the enterprise with ID: " + id);
+            throw new DataProcessingException(messageService.getMessage("enterprise.delete") + id);
         }
     }
 
