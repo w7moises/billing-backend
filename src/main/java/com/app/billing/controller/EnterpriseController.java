@@ -3,13 +3,16 @@ package com.app.billing.controller;
 import com.app.billing.dto.EnterpriseDto;
 import com.app.billing.dto.create.EnterpriseCreateDto;
 import com.app.billing.service.EnterpriseService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import net.sf.jasperreports.engine.JRException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,6 +60,15 @@ public class EnterpriseController {
     public ResponseEntity<Object> getEnterpriseByRuc(@PathVariable String ruc) {
         Object response = enterpriseService.searchEnterpriseByRuc(ruc);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/report/{type}")
+    public void getPdf(HttpServletResponse response, @PathVariable String type) throws JRException, IOException {
+        if (type.equals("pdf")) {
+            enterpriseService.exportPdf(response);
+        } else if (type.equals("xls")) {
+            enterpriseService.exportExcel(response);
+        }
     }
 
 }
