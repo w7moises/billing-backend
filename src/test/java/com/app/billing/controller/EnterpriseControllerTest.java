@@ -20,8 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import static org.mockito.BDDMockito.given;
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,8 +60,10 @@ public class EnterpriseControllerTest {
     private EnterpriseDto enterpriseDto;
 
     private EnterpriseCreateDto enterpriseCreateDto;
+
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
     private ObjectMapper objectMapper;
 
