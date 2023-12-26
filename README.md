@@ -57,7 +57,7 @@ Project is licensed under the [MIT](LICENSE) license.
 
 Copyright &copy; 2020 - 2023, Walter (Hipe) Molina
 
-[![][shield-spring]]()
+![alt-text](https://static.ankama.com/dofus/ng/modules/mmorpg/community/directories/characters/ornaments/ornament_82.png)
 
 [shield-mit]: https://img.shields.io/badge/license-MIT-blue.svg
 [shield-java]: https://img.shields.io/badge/Java-17-blue.svg
