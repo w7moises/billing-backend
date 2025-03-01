@@ -55,7 +55,7 @@ Project is licensed under the [MIT](LICENSE) license.
 
 ## Author
 
-Copyright &copy; 2020 - 2023, Walter (Hipe) Molina
+Copyright &copy; 2020 - 2025, Walter (Hipe) Molina
 
 ![alt-text](https://static.ankama.com/dofus/ng/modules/mmorpg/community/directories/characters/ornaments/ornament_82.png)
 
